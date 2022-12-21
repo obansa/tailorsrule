@@ -1,9 +1,11 @@
 /**
  * This is main script file that contains JS code.
  */
-(function ($) {
-    // Main Object
+
+ // Main Object
     var RESHOP = {};
+
+(function ($) {
 
     // Predefined variables
     var
@@ -91,13 +93,20 @@
         // Check if these anchors are on page
         if ($collectionCartModalLink.length) {
             $collectionCartModalLink.on('click',function () {
+                $('#cartName').html('');
+                $('#cartQant').html('');
+                $('#cartP').html('');
+                $('.success__text-wrap').css('display', 'none')
+                $('.s-option__link-box').css('display', 'none');
+                $('.s-option__text').html('loading');
+                $('#add-to-cart .dismiss-button').removeClass('fas fa-times')
+                $('.success__img-wrap').css('display', 'none')
                 var getElemId = $(this).data('modal-id');
                 $(getElemId).modal({
                     backdrop: 'static',
                     keyboard: false,
                     show:true
                 });
-
 
             });
         }

@@ -1,0 +1,33 @@
+#login-modal .modal-dialog {
+  width: 100%;
+  max-width: 800px; }
+
+#login-modal .modal-body {
+  padding: 0; }
+
+#login-modal .new-l__dismiss {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  background-color: transparent;
+  padding: 8px;
+  font-size: 16px;
+  border: 0;
+  color: #515151;
+  cursor: pointer; }
+
+#login-modal .row {
+  -ms-flex-align: center;
+      align-items: center; }
+
+.mc.btn--e-transparent-secondary-b-2:hover{
+    background-color: transparent;
+}
+.category-content{
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    padding: 25px;
+    color: #ffffff;
+}

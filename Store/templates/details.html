@@ -28,7 +28,7 @@
                             <div class="pd u-s-m-b-30">
                                 <div class="slider-fouc pd-wrap">
                                     <div id="pd-o-initiate">
-                                        {% for image in product.productsimage_set.all %}
+                                        {% for image in product.project_img.all %}
                                             <div class="pd-o-img-wrap" data-src="{{image.image.url}} ">
 
                                                 <img class="u-img-fluid" src="{{image.image.url}}" data-zoom-image="{{image.image.url}}" alt=""></div>
@@ -40,7 +40,7 @@
                                 <div class="u-s-m-t-15">
                                     <div class="slider-fouc">
                                         <div id="pd-o-thumbnail">
-                                            {% for image in product.productsimage_set.all %}
+                                            {% for image in product.project_img.all %}
                                                 <div>
 
                                                     <img class="u-img-fluid" src="{{image.image.url}}" alt=""></div>
@@ -61,9 +61,9 @@
                                 <div>
                                     <div class="pd-detail__inline">
 
-                                        <span class="pd-detail__price">${{product.new_price}}</span>
+                                        <span class="pd-detail__price">${{product.price}}</span>
 
-                                        <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">${{product.old_price}}</del></div>
+                                        <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">${{product.discount}}</del></div>
                                 </div>
                                 <div class="u-s-m-b-15">
                                     <div class="pd-detail__rating gl-rating-style"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
@@ -87,7 +87,7 @@
 
                                         <span class="pd-detail__click-wrap"><i class="far fa-heart u-s-m-r-6"></i>
 
-                                            <a href="signin.html">Add to Wishlist</a>
+                                            <a class="{{product.id}}" id="wishlist">Add to Wishlist</a>
 
                                             <span class="pd-detail__click-count">(222)</span></span></div>
                                 </div>
@@ -129,7 +129,7 @@
 
                                                     <span class="input-counter__minus fas fa-minus"></span>
 
-                                                    <input class="input-counter__text input-counter--text-primary-style" type="text" value="1" data-min="1" data-max="1000">
+                                                    <input class="input-counter__text input-counter--text-primary-style" id="p-first" type="text" value="1" data-min="1" data-max="1000">
 
                                                     <span class="input-counter__plus fas fa-plus"></span></div>
                                                 <!--====== End - Input Counter ======-->
@@ -801,10 +801,20 @@
 {% block script %}
 <script>
 $(document).ready(function(){
+
     $('#addCart').click(function(){
-        add_to_cart('caftan',1,'55','20','2000',91)
+        var quantity = $('.input-counter #p-first').val()
+        var image = undefined
+        '{% for x in product.project_img.all %}'
+            '{% if x.is_cover %}'
+                image = '{{x.image.url}}'
+            '{%endif%}'
+        '{%endfor%}'
+        add_to_cart({{product.id}}, '{{product.name}}', quantity, {{product.price}}, '{{product.size}}', image)
     });
+
 });
 
 </script>
+
 {%endblock%}
