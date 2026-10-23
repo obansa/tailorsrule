@@ -45,3 +45,33 @@ npx expo lint
 - `src/app` – screens (Expo Router): login, customers, customer profile, measure, record, settings
 - `src/lib` – store, units, Google Drive backup, auth, theme
 - `src/components` – UI kit and icons
+
+## Build with EAS
+
+`eas.json` has three profiles: `development` (dev client APK / iOS simulator build), `preview` (installable APK for testers) and `production` (store build, version auto-incremented).
+
+One-time setup (needs your Expo account, so run it on your computer):
+
+```bash
+npm install -g eas-cli      # or prefix commands with npx eas-cli@latest
+eas login
+eas init                    # links the project and writes the project ID into app.json
+```
+
+Add the Google client IDs as EAS environment variables so cloud builds can read them:
+
+```bash
+eas env:create --name EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID --value <web-client-id> --environment development --environment preview --environment production --visibility plaintext
+eas env:create --name EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID --value <ios-client-id> --environment development --environment preview --environment production --visibility plaintext
+```
+
+Build:
+
+```bash
+npm run build:dev:android       # development build for testing (run with: npx expo start --dev-client)
+npm run build:preview:android   # APK to share with testers
+npm run build:prod:android      # .aab for Google Play
+eas submit --platform android   # after a production build
+```
+
+For Google Sign-In on Android, add the SHA-1 of the EAS keystore (`eas credentials`) to the Android OAuth client in Google Cloud.
