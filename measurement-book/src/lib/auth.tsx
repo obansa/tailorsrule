@@ -63,7 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.type === 'success') setUser(toUser(res.data.user));
     } catch (e) {
       if (isErrorWithCode(e) && e.code === statusCodes.SIGN_IN_CANCELLED) return;
-      setError('Could not sign in with Google. Check your connection and try again.');
+      const detail = isErrorWithCode(e) ? `${e.code}: ${e.message}` : e instanceof Error ? e.message : String(e);
+      const hint = !process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ? ' (EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is not set in this build)' : '';
+      setError(`Could not sign in with Google. ${detail}${hint}`);
     }
   }, []);
 
