@@ -29,6 +29,8 @@ interface Ctx {
   enabled: boolean;
   lastBackupAt: number | null;
   initial: InitialSync;
+  /** Why the first sync failed, for the retry screen. */
+  initialError: string | null;
   /** Initial sync failed and local data belongs to a different account, so continuing could overwrite the backup. */
   blocked: boolean;
   setEnabled: (v: boolean) => void;
@@ -56,6 +58,7 @@ export function BackupProvider({ children }: { children: React.ReactNode }) {
   const initial: InitialSync = user && sync?.uid === user.id ? sync.state : 'waiting';
   const blocked = user && sync?.uid === user.id ? sync.blocked : false;
   const [attempt, setAttempt] = useState(0);
+  const [initialError, setInitialError] = useState<string | null>(null);
   const inFlight = useRef(false);
 
   const patchMeta = useCallback((p: Partial<Meta>) => {
@@ -108,8 +111,9 @@ export function BackupProvider({ children }: { children: React.ReactNode }) {
           storeRef.current.claim(user.id);
         }
         setSync({ uid: user.id, state: 'done', blocked: false });
-      } catch {
+      } catch (e) {
         if (cancelled) return;
+        setInitialError(e instanceof Error ? e.message : String(e));
         const mustWait = local.ownerId !== user.id || otherAccount;
         setSync({ uid: user.id, state: mustWait ? 'failed' : 'done', blocked: mustWait });
         if (!mustWait) setStatus('pending');
@@ -209,12 +213,13 @@ export function BackupProvider({ children }: { children: React.ReactNode }) {
       lastBackupAt: meta.lastBackupAt,
       initial,
       blocked,
+      initialError,
       setEnabled,
       backupNow,
       restoreNow,
       retryInitial: () => setAttempt((n) => n + 1),
     }),
-    [meta.enabled, meta.lastBackupAt, status, initial, blocked, setEnabled, backupNow, restoreNow],
+    [meta.enabled, meta.lastBackupAt, status, initial, blocked, initialError, setEnabled, backupNow, restoreNow],
   );
 
   return <BackupCtx.Provider value={value}>{children}</BackupCtx.Provider>;

@@ -34,6 +34,11 @@ function Gate() {
             Could not load your backup
           </Text>
           <Text muted>Check your internet connection and try again. Your measurements are safe in Google Drive.</Text>
+          {backup.initialError ? (
+            <Text size={12} color={colors.danger}>
+              {backup.initialError}
+            </Text>
+          ) : null}
           <Button title="Try again" onPress={backup.retryInitial} />
           <Button title="Sign out" variant="secondary" onPress={() => void signOut()} />
         </View>

@@ -11,9 +11,19 @@ const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
 
 export class DriveError extends Error {
   status: number;
-  constructor(status: number) {
-    super(`Google Drive request failed (${status})`);
+  constructor(status: number, detail = '') {
+    super(`Google Drive request failed (${status})${detail ? `: ${detail}` : ''}`);
     this.status = status;
+  }
+}
+
+/** Google's JSON error body carries the useful reason, e.g. "Google Drive API has not been used in project…". */
+async function errorDetail(res: Response): Promise<string> {
+  try {
+    const body = (await res.json()) as { error?: { message?: string } };
+    return body.error?.message ?? '';
+  } catch {
+    return '';
   }
 }
 
@@ -28,7 +38,7 @@ async function authFetch(url: string, init: RequestInit = {}): Promise<Response>
     ({ accessToken } = await GoogleSignin.getTokens());
     res = await call(accessToken);
   }
-  if (!res.ok) throw new DriveError(res.status);
+  if (!res.ok) throw new DriveError(res.status, await errorDetail(res));
   return res;
 }
 
