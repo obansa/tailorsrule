@@ -32,6 +32,16 @@
         }
       ]
     ],
-    "scheme": "measurementbook"
+    "scheme": "measurementbook",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "f55c53d0-fcf3-41a5-9eda-bfc8bdf40c66"
+      }
+    }
   }
 }
